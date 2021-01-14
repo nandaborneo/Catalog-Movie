@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="genre"
+            type="com.example.catalogmovie.data.local.entity.GenreEntity" />
+
+        <variable
+            name="action"
+            type="com.example.catalogmovie.ui.listener.ItemClickListener" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:onClick="@{()->action.onItemClick()}"
+        app:cardBackgroundColor="@color/cardGenre"
+        app:cardCornerRadius="15dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="50dp"
+            android:paddingBottom="50dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@{genre.name}"
+                android:textAlignment="center"
+                android:textSize="28sp"
+                tool:text="Genre" />
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

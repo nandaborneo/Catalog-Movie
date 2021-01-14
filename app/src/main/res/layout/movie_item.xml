@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.example.catalogmovie.utils.ExtentionsKt"/>
+        <variable
+            name="action"
+            type="com.example.catalogmovie.ui.listener.ItemClickListener" />
+
+        <variable
+            name="movieItem"
+            type="com.example.catalogmovie.data.local.entity.MovieWithGenres" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/movie_item_layout"
+        android:layout_width="200dp"
+        android:layout_height="300dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:onClick="@{()->action.onItemClick()}">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:background="@drawable/text_overlay_bg"
+            tool:ignore="UselessParent">
+            <RelativeLayout
+                android:layout_width="80dp"
+                android:layout_height="25dp"
+                android:alpha="0.9"
+                android:background="@color/bgRating"
+                android:elevation="10dp"
+                android:gravity="center"
+                android:rotation="-45"
+                android:translationX="-22dp"
+                android:translationY="7dp">
+
+                <TextView
+                    android:id="@+id/movieRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:alpha="0.9"
+                    android:elevation="10dp"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textColor="#fff"
+                    android:text="@{movieItem.movie.vote_average+``}"
+                    app:drawableStartCompat="@drawable/ic_baseline_star_24"
+                    tool:text="3.5" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/movieYear"
+                android:layout_width="140dp"
+                android:layout_height="25dp"
+                android:alpha="0.9"
+                android:background="@color/bgYear"
+                android:elevation="10dp"
+                android:gravity="center"
+                android:rotation="-45"
+                android:singleLine="true"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:text="@{ExtentionsKt.getYear(movieItem.movie.release_date)}"
+                android:translationX="-30dp"
+                android:translationY="28dp"
+                tool:text="2020" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/movie_item_bg">
+                <ImageView
+                    android:id="@+id/movie_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="@{movieItem.movie.title}"
+                    tool:src="@drawable/placeholder"
+                    loadImage="@{ExtentionsKt.toImageUrl(movieItem.movie.poster_path)}"
+                    android:background="@drawable/text_overlay_bg"
+                    android:scaleType="centerCrop" />
+
+                <View
+                    android:id="@+id/text_overlay_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/text_overlay_bg" />
+
+                <TextView
+                    android:id="@+id/movie_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/rv_movie_genre"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="@{movieItem.movie.title}"
+                    tool:text="Blade Runner 2049"
+                    android:textColor="#fff"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_movie_genre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/popularity"
+                    android:layout_centerHorizontal="true"
+                    android:orientation="horizontal"
+                    app:alignContent="center"
+                    app:flexWrap="wrap"
+                    tool:listitem="@layout/genre_item"
+                    tool:itemCount="4"
+                    app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager" />
+
+                <TextView
+                    android:id="@+id/popularity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="5dp"
+                    android:drawablePadding="5dp"
+                    android:gravity="center"
+                    android:numStars="5"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:stepSize="0.5"
+                    android:text="@{movieItem.movie.popularity+``}"
+                    android:textColor="#fff"
+                    app:drawableStartCompat="@drawable/ic_baseline_thumb_up_24"
+                    tool:text="5000.555" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</layout>
