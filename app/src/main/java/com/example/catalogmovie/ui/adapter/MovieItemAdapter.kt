@@ -35,7 +35,8 @@ class MovieItemAdapter constructor(
                 R.layout.movie_item,
                 parent,
                 false
-            )
+            ),
+            viewModel
         )
     }
 
@@ -53,22 +54,17 @@ class MovieItemAdapter constructor(
 
     class MovieItemHolder constructor(
         val context: Activity,
-        val binding: MovieItemBinding
+        val binding: MovieItemBinding,
+        val viewModel: MovieViewModel
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(movieItem: MovieWithGenres, mainActionListener: ItemClickListener) {
             binding.movieImage.clipToOutline = true
             binding.movieItem = movieItem
-            val dm = DisplayMetrics()
-            context.display?.getRealMetrics(dm)
-            val sized = dm.getSizeByScreenSize()
-            binding.movieItemLayout.apply {
-                layoutParams.width = sized
-                layoutParams.height = sized + (sized / 2)
-            }
             binding.action = mainActionListener
-
             val genreList: MutableList<GenreEntity> = arrayListOf()
-            genreList.addAll(movieItem.genreLists)
+            for (genreItem in movieItem.genreLists){
+                genreList.add(viewModel.genreList.first { genreEntity -> genreEntity.genreId == genreItem.genreId })
+            }
             binding.rvMovieGenre.adapter = GenreMovieItemAdapter(genreList)
             binding.executePendingBindings()
         }

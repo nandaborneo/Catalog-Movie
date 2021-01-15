@@ -58,11 +58,18 @@ class NetworkModule {
 
     @Provides
     @Singleton
+    fun provideAppExecutors(): AppExecutors{
+        return AppExecutors()
+    }
+
+    @Provides
+    @Singleton
     fun provideMovieTvRepository(
         remoteDataSource: RemoteDataSource,
-        localDataSource: LocalDataSource
+        localDataSource: LocalDataSource,
+        appExecutors: AppExecutors
     ): MovieRepository {
-        return MovieRepository(remoteDataSource, localDataSource, AppExecutors())
+        return MovieRepository(remoteDataSource, localDataSource, appExecutors)
     }
 
 }

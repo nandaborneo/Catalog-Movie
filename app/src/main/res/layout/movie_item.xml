@@ -16,7 +16,7 @@
 
     <RelativeLayout
         android:id="@+id/movie_item_layout"
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="300dp"
         android:clickable="true"
         android:focusable="true"
@@ -115,7 +115,7 @@
                     android:orientation="horizontal"
                     app:alignContent="center"
                     app:flexWrap="wrap"
-                    tool:listitem="@layout/genre_item"
+                    tool:listitem="@layout/genre_movie_item"
                     tool:itemCount="4"
                     app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager" />
 

@@ -2,6 +2,7 @@ package com.example.catalogmovie.data
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.example.catalogmovie.data.local.LocalDataSource
@@ -14,6 +15,7 @@ import com.example.catalogmovie.data.remote.NetworkBoundResource
 import com.example.catalogmovie.data.remote.RemoteDataSource
 import com.example.catalogmovie.data.remote.response.DiscoverResponse
 import com.example.catalogmovie.data.remote.response.GenreListResponse
+import com.example.catalogmovie.data.remote.response.MovieDetailResponse
 import com.example.catalogmovie.utils.AppExecutors
 import com.example.catalogmovie.vo.Resource
 import javax.inject.Inject
@@ -32,6 +34,8 @@ class MovieRepository @Inject constructor(
     }
 
     private var PAGE = 0
+
+    fun getSavedGenre(): List<GenreEntity> = localDataSource.getPlainAllGenre()
 
     fun getDataGenre(): LiveData<Resource<PagedList<GenreEntity>>> =
         object : NetworkBoundResource<PagedList<GenreEntity>, GenreListResponse>(appExecutors){
@@ -62,10 +66,15 @@ class MovieRepository @Inject constructor(
             }
         }.asLiveData()
 
+    fun getDiscoverMovie(map: HashMap<String?, String?>): RepoMovieResult {
+        return remoteDataSource.getDiscoverMoviePagedStyle(map)
+    }
+
     fun getDataDiscoverMovie(
         map: HashMap<String?, String?>
-    ): LiveData<Resource<PagedList<MovieWithGenres>>> =
-        object : NetworkBoundResource<PagedList<MovieWithGenres>, DiscoverResponse>(appExecutors){
+    ): LiveData<Resource<PagedList<MovieWithGenres>>> {
+
+        return object : NetworkBoundResource<PagedList<MovieWithGenres>, DiscoverResponse>(appExecutors){
             override fun loadFromDB(): LiveData<PagedList<MovieWithGenres>> {
                 Log.e("PAGE1", PAGE.toString() +"|"+ map["page"]?.toInt())
                 val config = PagedList.Config.Builder()
@@ -122,4 +131,10 @@ class MovieRepository @Inject constructor(
                 }
             }
         }.asLiveData()
+    }
+
+    fun getMovieDetail(movieId: Int, map: HashMap<String?, String?>): MutableLiveData<Resource<MovieDetailResponse>>
+        = remoteDataSource.getMovieDetail(movieId,map)
+
+
 }

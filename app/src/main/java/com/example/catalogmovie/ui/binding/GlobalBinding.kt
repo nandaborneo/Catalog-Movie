@@ -1,5 +1,6 @@
 package com.example.catalogmovie.ui.binding
 
+import android.util.Log
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.paging.PagedList
@@ -36,7 +37,7 @@ object GlobalBinding {
 
     @BindingAdapter("genreList")
     @JvmStatic
-    fun setGenreList(recyclerView: RecyclerView, dataList: MutableList<GenreEntity>?) {
+    fun setMovieGenreList(recyclerView: RecyclerView, dataList: MutableList<GenreEntity>?) {
         dataList?.let {
             (recyclerView.adapter as GenreMovieItemAdapter).replaceData(it)
         }

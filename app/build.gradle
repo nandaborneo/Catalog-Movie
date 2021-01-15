@@ -69,6 +69,7 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glideVersion"
     implementation "androidx.room:room-runtime:$roomRuntimeVersion"
     kapt "androidx.room:room-compiler:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
 
 
     implementation "com.google.dagger:hilt-android:$daggerHiltVersion"

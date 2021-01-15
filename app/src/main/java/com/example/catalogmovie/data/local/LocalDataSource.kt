@@ -3,6 +3,7 @@ package com.example.catalogmovie.data.local
 import androidx.paging.DataSource
 import com.example.catalogmovie.data.local.entity.*
 import com.example.catalogmovie.data.local.room.MovieDatabase
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -27,6 +28,8 @@ class LocalDataSource @Inject constructor(movieDatabase: MovieDatabase) {
     ) = movieDao.getGenre(id)
 
     fun getAllGenre(): DataSource.Factory<Int, GenreEntity> = movieDao.getGenre()
+
+    fun getPlainAllGenre(): List<GenreEntity> = runBlocking { return@runBlocking movieDao.getPlainGenre()}
 
     fun getMovByGenre(
         genreId: Int

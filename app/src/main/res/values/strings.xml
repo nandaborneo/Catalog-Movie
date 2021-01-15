@@ -4,4 +4,7 @@
     <string name="cd_splash_creen_movie_image">Splash Creen Movie Image</string>
     <string name="pilih_kategorimu">Pilih Kategorimu</string>
     <string name="load_more">Load More !!</string>
+    <string name="title_movie">Title Movie</string>
+    <string name="plot_summary">Plot Summary</string>
+    <string name="review_author_image">Review author image</string>
 </resources>

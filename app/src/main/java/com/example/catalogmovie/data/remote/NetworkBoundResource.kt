@@ -10,9 +10,12 @@ abstract class NetworkBoundResource<ResultType, RequestType>(private val mExecut
 
     private val result = MediatorLiveData<Resource<ResultType>>()
 
+
+
     init {
         result.value = Resource.loading(null)
 
+        Log.e("berpa kali","1")
         @Suppress("LeakingThis")
         val dbSource = loadFromDB()
 
@@ -41,7 +44,7 @@ abstract class NetworkBoundResource<ResultType, RequestType>(private val mExecut
     private fun fetchFromNetwork(dbSource: LiveData<ResultType>) {
 
         val apiResponse = createCall()
-
+        Log.e("apa",apiResponse.toString())
         result.addSource(dbSource) { newData ->
             result.value = Resource.loading(newData)
         }
@@ -53,13 +56,14 @@ abstract class NetworkBoundResource<ResultType, RequestType>(private val mExecut
                     mExecutors.diskIO().execute {
                         saveCallResult(response.body)
                         mExecutors.mainThread().execute {
+                            Log.e("berpa kali","2")
                             result.addSource(loadFromDB()) { newData ->
                                 result.value = Resource.success(newData)
                             }
                         }
                     }
                 StatusResponse.EMPTY -> mExecutors.mainThread().execute {
-                    Log.e("dosisin","ajs")
+                    Log.e("berpa kali","3")
                     result.addSource(loadFromDB()) { newData ->
                         result.value = Resource.success(newData)
                     }

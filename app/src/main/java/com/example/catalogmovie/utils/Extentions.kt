@@ -63,6 +63,7 @@ fun DisplayMetrics.getSizeByScreenSize(): Int {
     }
 }
 
-fun String.toImageUrl(): String {
-    return IMAGE_BASE_URL_W500 + this
+fun String?.toImageUrl(): String {
+    this?.let { return IMAGE_BASE_URL_W500+this }
+    return ""
 }

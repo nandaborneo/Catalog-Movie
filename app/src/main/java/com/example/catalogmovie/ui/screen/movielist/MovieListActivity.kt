@@ -5,9 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.catalogmovie.R
-import com.example.catalogmovie.databinding.ActivityMainBinding
+import com.example.catalogmovie.databinding.ActivityMovieListBinding
 import com.example.catalogmovie.ui.adapter.MovieItemAdapter
 import com.example.catalogmovie.ui.screen.detail.DetailMovieActivity
 import com.example.catalogmovie.ui.viewmodel.MovieViewModel
@@ -20,13 +21,13 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MovieListActivity : AppCompatActivity() {
 
-    private lateinit var viewBinding: ActivityMainBinding
+    private lateinit var viewBinding: ActivityMovieListBinding
     private lateinit var dataIntent: Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewBinding = ActivityMainBinding.inflate(layoutInflater).apply {
+        viewBinding = ActivityMovieListBinding.inflate(layoutInflater).apply {
             vm = obtainViewModel(MovieViewModel::class.java)
         }
         viewBinding.lifecycleOwner = this
@@ -41,6 +42,9 @@ class MovieListActivity : AppCompatActivity() {
 
     private fun setUpObserver() {
         viewBinding.vm?.apply {
+            dataIntent.extras?.getInt("genre_id")?.let {
+                getPagedListMovie(it)
+            }
             openDetailMovie.observe(this@MovieListActivity, {
                 val intent = Intent(this@MovieListActivity, DetailMovieActivity::class.java)
                 intent.putExtra("movieId", it)
@@ -49,75 +53,25 @@ class MovieListActivity : AppCompatActivity() {
             message.observe(this@MovieListActivity, {
                 Toast.makeText(this@MovieListActivity, it, Toast.LENGTH_LONG).show()
             })
-            page.observe(this@MovieListActivity,{
-                    _ ->
-
-                getListMovie(dataIntent.extras?.getInt("genre_id")!!)
-                Log.e("caga","asdsadasd")
-            })
-            dataIntent.extras?.getInt("genre_id")?.let {
-                getListMovie(it).observe(this@MovieListActivity, { listMovie ->
-                if (listMovie != null) {
-                    when (listMovie.status) {
-                        Status.LOADING -> loading.postValue(true)
-                        Status.SUCCESS -> {
-                            loading.postValue(false)
-                            val tempListMovie = listMovie.copy()
-                            if((listMovie.data?.size ?: 0) % 2 == 1){
-                                tempListMovie.data?.removeLast()
-                            }
-                            movieList.postValue(listMovie.data)
-                            viewBinding.rvMovie.adapter?.let {
-                                    adapter ->
-                                when (adapter) {
-                                    is MovieItemAdapter -> {
-                                        adapter.submitList(listMovie.data)
-                                        adapter.notifyDataSetChanged()
-                                    }
-                                    else -> Log.e("Error","NoAdapter")
-                                }
-                            }
-                        }
-                        Status.ERROR -> {
-                            loading.value = false
-                            Toast.makeText(this@MovieListActivity, "Check your internet connection", Toast.LENGTH_SHORT).show()
-                        }
+            networkState?.observe(this@MovieListActivity, {
+                when (it.status) {
+                    Status.LOADING -> {
+                        if (movieList?.value?.size?: 0<=0)
+                            loading.postValue(true)
                     }
+                    Status.SUCCESS -> loading.postValue(false)
+                    Status.ERROR -> loading.postValue(false)
                 }
             })
-            }
         }
     }
 
     private fun setUpRecyclerView(){
         viewBinding.vm?.let {
             viewBinding.rvMovie.apply {
-                layoutManager = FlexboxLayoutManager(context)
-                adapter = MovieItemAdapter(arrayListOf(), it, this@MovieListActivity)
-                addOnScrollListener(discoverScrollListener())
-            }
-        }
-    }
 
-    private fun discoverScrollListener() = object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-            viewBinding.vm?.loading?.value?.let {
-                if (it) {
-                    return
-                }
-            }
-            if (!recyclerView.canScrollVertically(1)) {
-                viewBinding.vm?.page?.value?.apply {
-                    viewBinding.vm?.page?.value =
-                        (viewBinding.vm?.page?.value?.toInt()?.plus(1)).toString()
-                }
-                Snackbar.make(viewBinding.clMain, R.string.load_more, Snackbar.LENGTH_LONG).apply {
-                    animationMode = Snackbar.ANIMATION_MODE_SLIDE
-                    setAction("Hide") {
-                        this.dismiss()
-                    }.show()
-                }
+                layoutManager = GridLayoutManager(context,2)
+                adapter = MovieItemAdapter(arrayListOf(), it, this@MovieListActivity)
             }
         }
     }
